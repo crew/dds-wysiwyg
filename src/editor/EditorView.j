@@ -11,6 +11,10 @@
 import <AppKit/CPView.j>
 import <AppKit/CPShadowView.j>
 import <AppKit/CPCollectionView.j>
+import <AppKit/CPGraphicsContext.j>
+
+import <AppKit/CGGradient.j>
+import <AppKit/CGColorSpace.j>
 
 import "../slide/SlideView.j"
 
@@ -140,14 +144,12 @@ import "../slide/SlideView.j"
 
 - (void)setRepresentedObject:(JSObject)anObject
 {
-  var imageView = [[CPImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
-
   // Quick Hack
   var width = CGRectGetHeight([self bounds]) * 0.80;
   var borderView = [[CPShadowView alloc] initWithFrame:CGRectMake(47, 10, 110, 70)];
   [borderView setBackgroundColor:[CPColor whiteColor]];
 
-  var blueView = [[CPView alloc] initWithFrame:CGRectInset([borderView bounds], 5, 5)];
+  var blueView = [[CPShadowView alloc] initWithFrame:CGRectInset([borderView bounds], 5, 5)];
   [blueView setBackgroundColor:[CPColor colorWithHexString:"5793D1"]];
   [borderView addSubview:blueView];
 

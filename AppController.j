@@ -21,7 +21,7 @@ import "src/slide/SlideDocument.j"
 
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
-//  CPLogRegister(CPLogPopup);
+  CPLogRegister(CPLogPopup);
   initialDoc = [[SlideDocument alloc] init];
   mainWindow = [[EditorWindow alloc] initWithContentRect:CGRectMakeZero()
                                                styleMask:CPBorderlessBridgeWindowMask];
