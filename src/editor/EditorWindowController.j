@@ -11,6 +11,8 @@
 import <AppKit/CPWindowController.j>
 import <AppKit/CPColorPanel.j>
 
+import "PhotoPanel.j"
+
 @implementation EditorWindowController : CPWindowController
 {
   CPPanel mInspectorPanel;
@@ -28,14 +30,15 @@ import <AppKit/CPColorPanel.j>
     [mInspectorPanel setFloatingPanel:YES];
     [mInspectorPanel setTitle:"Inspector"];
 
-    mMediaBrowser = [[CPPanel alloc] initWithContentRect:CGRectMake((CGRectGetWidth(bounds) / 2), (CGRectGetHeight(bounds) / 2), 225, 325)
-                                               styleMask:CPHUDBackgroundWindowMask | CPClosableWindowMask];
-    [mMediaBrowser setFloatingPanel:YES];
-    [mMediaBrowser setTitle:"Media Browser"];
+//     mMediaBrowser = [[CPPanel alloc] initWithContentRect:CGRectMake((CGRectGetWidth(bounds) / 2), (CGRectGetHeight(bounds) / 2), 225, 325)
+//                                                styleMask:CPHUDBackgroundWindowMask | CPClosableWindowMask];
+//     [mMediaBrowser setFloatingPanel:YES];
+//     [mMediaBrowser setTitle:"Media Browser"];
 
-    var mediaCollection = [[CPCollectionView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([mMediaBrowser frame]), CGRectGetHeight([mMediaBrowser frame]))];
-    [mediaCollection setBackgroundColor:[CPColor whiteColor]];
+//    var mediaCollection = [[CPCollectionView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([mMediaBrowser frame]), CGRectGetHeight([mMediaBrowser frame]))];
+//    [mediaCollection setBackgroundColor:[CPColor whiteColor]];
   //[mMediaBrowser addSubview:mediaCollection];
+    mMediaBrowser = [[PhotoPanel alloc] init];
   }
 
   return self;

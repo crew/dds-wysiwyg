@@ -11,6 +11,8 @@
 import <AppKit/CALayer.j>
 import <AppKit/CPShadowView.j>
 
+import "../editor/PhotoPanel.j"
+
 const kDefaultShadowWeight = 2.0;
 
 @implementation CanvasView : CPShadowView
@@ -32,9 +34,36 @@ const kDefaultShadowWeight = 2.0;
     [mSlideView setAutoresizingMask: CPViewHeightSizable | CPViewWidthSizable]
     [mSlideView setWeight:CPHeavyShadow];
     [self addSubview:mSlideView];
+
+    [self registerForDraggedTypes:[kPhotoDragType]];
   }
 
   return self;
+}
+
+- (void)performDragOperation:(CPDraggingInfo)aSender
+{
+  var data = [[aSender draggingPasteboard] dataForType:kPhotoDragType];
+  [self addSubview:[CPKeyedUnarchiver unarchiveObjectWithData:data]];
+}
+
+- (void)drawRect:(CGRect)aRect
+{
+  var myFrame = [self frame];
+  var containerWidth = myFrame.size.width;
+  var containerHeight = myFrame.size.height;
+  var slideHeight = (containerWidth / 16) * 9;
+  var slideWidth = (containerHeight / 9) * 16;
+
+  if (containerHeight < slideHeight) {
+    var xOrg = (containerWidth / 2) - (slideWidth / 2);
+    var newRect = CGRectMake(xOrg, 0, slideWidth, containerHeight);
+  } else {
+    var yOrg = (containerHeight / 2) - (slideHeight / 2);
+    var newRect = CGRectMake(0, yOrg, containerWidth, slideHeight);
+  }
+
+  [mSlideView setFrame:CGRectInset(newRect, 20, 20)];
 }
 
 - (SlideView)slideView
@@ -74,6 +103,7 @@ const kDefaultShadowWeight = 2.0;
 
   return self;
 }
+
 
 - (void)mouseDown:(CPEvent)event
 {

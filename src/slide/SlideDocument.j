@@ -10,10 +10,34 @@
 
 import <AppKit/CPDocument.j>
 
+import "../editor/EditorWindowController.j"
+import "SlideView.j"
+
 @implementation SlideDocument : CPDocument
 {
-
+  EditorWindowController mWindowController;
+  SlideView mSlideView;
 }
 
+- (SlideView)documentView
+{
+  return mSlideView;
+}
+
+- (void)windowControllerWillLoadNib:(CPWindowController)aController
+{
+  [super windowControllerDidLoadNib:aController];
+  CPLog("Loaded DOCUMENT");
+}
+
+- (void)makeWindowControllers
+{
+  mainWindow = [[EditorWindow alloc] initWithContentRect:CGRectMakeZero()
+                                               styleMask:CPBorderlessBridgeWindowMask];
+
+  mWindowController = [[EditorWindowController alloc] initWithWindow:mainWindow];
+  [mWindowController setDocument:initialDoc];
+  [mWindowController showWindow:self];
+}
 
 @end
