@@ -46,11 +46,11 @@ import "PhotoPanel.j"
 
 - (void)showColors:(id)sender
 {
-//  [[CPColorPanel sharedColorPanel] setPickerMode:CPWheelColorPickerMode];
   [[CPColorPanel sharedColorPanel] orderFront:self];
   var colorPicker = [CPColorPanel sharedColorPanel];
 
-  [colorPicker setTarget:mCurrentCanvasView];
+//   var currentSlideView = [[self document] documentView];
+//   [colorPicker setTarget:currentSlideView];
 }
 
 - (void)showInspector:(id)sender
@@ -65,5 +65,6 @@ import "PhotoPanel.j"
 {
   [mMediaBrowser orderFront:self];
 }
+
 
 @end

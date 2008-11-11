@@ -57,7 +57,9 @@ kPhotoDragType = "kPhotoDragType";
   [contentView addSubview:scrollView];
 
   mImages = [[CPMutableArray alloc] init];
-  var filenames = [[CPArray alloc] initWithObjects:"sunbeams.png", "skyline_blue.png", "nuacm-logo.png"];
+  var filenames = [[CPArray alloc] initWithObjects:"sunbeams.png", "skyline_blue.png", "nuacm-logo.png",
+                                   "seal_nu-black.png", "seal-black.png", "seal_nu-white.png", "seal-white.png"];
+
 
   for (var i = 0; i < [filenames count]; i++) {
     var filename = "resources/demos/" + [filenames objectAtIndex:i];

@@ -12,6 +12,7 @@ import <AppKit/CALayer.j>
 import <AppKit/CPShadowView.j>
 
 import "../editor/PhotoPanel.j"
+@import "DraggableView.j"
 
 const kDefaultShadowWeight = 2.0;
 
@@ -34,17 +35,14 @@ const kDefaultShadowWeight = 2.0;
     [mSlideView setAutoresizingMask: CPViewHeightSizable | CPViewWidthSizable]
     [mSlideView setWeight:CPHeavyShadow];
     [self addSubview:mSlideView];
-
-    [self registerForDraggedTypes:[kPhotoDragType]];
   }
 
   return self;
 }
 
-- (void)performDragOperation:(CPDraggingInfo)aSender
+-(void)mouseDown:(CPEvent)anEvent
 {
-  var data = [[aSender draggingPasteboard] dataForType:kPhotoDragType];
-  [self addSubview:[CPKeyedUnarchiver unarchiveObjectWithData:data]];
+  CPLog("CANVAS VIEW");
 }
 
 - (void)drawRect:(CGRect)aRect
@@ -75,8 +73,7 @@ const kDefaultShadowWeight = 2.0;
 
 @implementation SlideView : CPShadowView
 {
-  CALayer     mRootLayer;
-  VinylLayer  mViynlLayer;
+  SlideChildView  mChildView;
 
   CGPoint mMouseDownPoint;
 }
@@ -86,34 +83,77 @@ const kDefaultShadowWeight = 2.0;
   self = [super initWithFrame:aFrame]
 
   if (self) {
-    mRootLayer = [CALayer layer];
+    mChildView = [[SlideChildView alloc] initWithSlideView:self];
+    [mChildView setBounds:aFrame];
+//     [mChildView setAnchorPoint:CGPointMakeZero()];
+//     [mChildView setPosition:CGPointMake(5.0, 5.0)];
+    [mChildView  setBackgroundColor:[CPColor whiteColor]];
 
-    [self setWantsLayer:YES];
-    [self setLayer:mRootLayer];
-    [mRootLayer setBackgroundColor:[CPColor whiteColor]];
+//    [self addSubview:mChildView];
 
-    mViynlLayer = [[VinylLayer alloc] initWithSlideView:self];
-    [mViynlLayer setBounds:aFrame];
-    [mViynlLayer setAnchorPoint:CGPointMakeZero()];
-    [mViynlLayer setPosition:CGPointMake(40.0, 40.0)];
+    [self registerForDraggedTypes:[kPhotoDragType]];
 
-    [mRootLayer addSublayer:mViynlLayer];
-    [mViynlLayer setNeedsDisplay];
+    [[CPNotificationCenter defaultCenter]
+        addObserver:self
+           selector:@selector(colorPanelDidChangeColor:)
+               name:CPColorPanelColorDidChangeNotification
+             object:[CPColorPanel sharedColorPanel]];
+
+    var dragView = [[DraggableItemView alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
+    [self addSubview:dragView];
   }
 
   return self;
 }
 
-
-- (void)mouseDown:(CPEvent)event
+- (void)performDragOperation:(CPDraggingInfo)aSender
 {
-  mMouseDownPoint = [self convertPoint:[event locationInWindow]
-                              fromView:nil];
+  var data = [[aSender draggingPasteboard] dataForType:kPhotoDragType];
+  var dragImage = [CPKeyedUnarchiver unarchiveObjectWithData:data];
+
+  var imageSize = [dragImage size];
+  var imageFrame = CGRectMake(0.0, 0.0, imageSize.width, imageSize.height);
+  var imageView = [[CPImageView alloc] initWithFrame:imageFrame];
+
+  [imageView setImage:dragImage];
+  [self addSubview:imageView];
 }
+
+- (void)colorPanelDidChangeColor:(CPNotification)aNotification
+{
+  var newColor = [[aNotification object] color];
+  [self setBackgroundColor:newColor];
+}
+
+-(void)mouseDown:(CPEvent)anEvent
+{
+  CPLog("SLIDE VIEW");
+}
+
+- (BOOL)acceptsFirstResponder
+{
+  return YES;
+}
+
+- (void)deactivate
+{
+  [[CPNotificationCenter defaultCenter]
+        removeObserver:self
+                  name:CPColorPanelColorDidChangeNotification
+                object:[CPColorPanel sharedColorPanel]];
+}
+
+// - (void)mouseDown:(CPEvent)event
+// {
+//   CPLog("SOMEWHERE");
+//   mMouseDownPoint = [self convertPoint:[event locationInWindow]
+//                               fromView:nil];
+// }
+
 
 @end
 
-@implementation VinylLayer : CALayer
+@implementation SlideChildView : CPView
 {
   SlideView  mSlideView;
 }

@@ -66,6 +66,17 @@ import "../slide/SlideView.j"
   mSideSlides = [CPArray array];
 }
 
+
+-(BOOL)acceptsFirstResponder
+{
+  return NO;
+}
+
+- (void)mouseUp:(CPEvent)event
+{
+
+}
+
 - (void)setupBorder
 {
   var bounds = [self bounds];
