@@ -19,6 +19,13 @@ import "SlideView.j"
   SlideView mSlideView;
 }
 
+-(void)setDocumentView:(SlideView)aSlideView
+{
+  if (mSlideView != aSlideView) {
+    mSlideView = aSlideView;
+  }
+}
+
 - (SlideView)documentView
 {
   return mSlideView;

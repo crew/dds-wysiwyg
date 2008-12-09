@@ -8,15 +8,15 @@
  *
  * ***** END LICENCE BLOCK ***** */
 
-import <AppKit/CALayer.j>
-import <AppKit/CPShadowView.j>
+@import <AppKit/CALayer.j>
+@import <AppKit/CPShadowView.j>
 
-import "../editor/PhotoPanel.j"
-@import "DraggableView.j"
+@import "../editor/PhotoPanel.j"
+@import "DraggableImage.j"
 
 const kDefaultShadowWeight = 2.0;
 
-@implementation CanvasView : CPShadowView
+@implementation CanvasView : CPView
 {
   SlideView mSlideView;
 }
@@ -29,20 +29,20 @@ const kDefaultShadowWeight = 2.0;
     [self setBackgroundColor:[CPColor colorWithCalibratedWhite:0.25 alpha:1.0]];
 
     mSlideView = [[SlideView alloc] initWithFrame:CGRectInset([self bounds], 20, 20)];
-    [mSlideView setFrameForContentFrame:[CPShadowView frameForContentFrame:[mSlideView frame]
-                                                                withWeight:CPHeavyShadow]];
+//     [mSlideView setFrameForContentFrame:[CPShadowView frameForContentFrame:[mSlideView frame]
+//                                                                 withWeight:CPHeavyShadow]];
 
     [mSlideView setAutoresizingMask: CPViewHeightSizable | CPViewWidthSizable]
-    [mSlideView setWeight:CPHeavyShadow];
+//    [mSlideView setWeight:CPHeavyShadow];
     [self addSubview:mSlideView];
   }
 
   return self;
 }
 
--(void)mouseDown:(CPEvent)anEvent
+-(SlideView)slideView
 {
-  CPLog("CANVAS VIEW");
+  return mSlideView;
 }
 
 - (void)drawRect:(CGRect)aRect
@@ -61,6 +61,19 @@ const kDefaultShadowWeight = 2.0;
     var newRect = CGRectMake(0, yOrg, containerWidth, slideHeight);
   }
 
+  var bounds = CGRectInset([self bounds], 5.0, 5.0),
+    context = [[CPGraphicsContext currentContext] graphicsPort],
+    radius = CGRectGetWidth(bounds) / 2.0;
+
+  // Draw the rectangle
+//  CGContextSetStrokeColor(context, [CPColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0]);
+//  CGContextSetLineWidth(context, 2.0);
+//  CGContextStrokeRect(context, bounds);
+
+//   var colors = [[CPColor blackColor], [CPColor whiteColor]];
+//   var points = [CGPointMake(0.0, CGRectGetMaxY(bounds)), CGPointMakeZero()];
+//   var greyGradient = CGGradientCreateWithColors(CGColorSpaceCreateDeviceRGB(), colors, points);
+//   CGContextDrawLinearGradient(context, greyGradient, CGPointMake(CGRectGetMidX(bounds), CGRectGetMaxY(bounds)), CGPointMakeZero(), nil);
   [mSlideView setFrame:CGRectInset(newRect, 20, 20)];
 }
 
@@ -71,7 +84,7 @@ const kDefaultShadowWeight = 2.0;
 
 @end
 
-@implementation SlideView : CPShadowView
+@implementation SlideView : CPView
 {
   SlideChildView  mChildView;
 
@@ -83,14 +96,6 @@ const kDefaultShadowWeight = 2.0;
   self = [super initWithFrame:aFrame]
 
   if (self) {
-    mChildView = [[SlideChildView alloc] initWithSlideView:self];
-    [mChildView setBounds:aFrame];
-//     [mChildView setAnchorPoint:CGPointMakeZero()];
-//     [mChildView setPosition:CGPointMake(5.0, 5.0)];
-    [mChildView  setBackgroundColor:[CPColor whiteColor]];
-
-//    [self addSubview:mChildView];
-
     [self registerForDraggedTypes:[kPhotoDragType]];
 
     [[CPNotificationCenter defaultCenter]
@@ -99,24 +104,47 @@ const kDefaultShadowWeight = 2.0;
                name:CPColorPanelColorDidChangeNotification
              object:[CPColorPanel sharedColorPanel]];
 
-    var dragView = [[DraggableItemView alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
-    [self addSubview:dragView];
   }
 
   return self;
 }
 
+// - (void)performDragOperation:(CPDraggingInfo)aSender
+// {
+//   var data = [[aSender draggingPasteboard] dataForType:kPhotoDragType];
+//   var dragImage = [CPKeyedUnarchiver unarchiveObjectWithData:data];
+
+//   var imageSize = [dragImage size];
+//   var imageFrame = CGRectMake(0.0, 0.0, imageSize.width, imageSize.height);
+//   var imageView = [[CPImageView alloc] initWithFrame:imageFrame];
+
+//   [imageView setImage:dragImage];
+//   [self addSubview:imageView];
+// }
+
+- (void)addDraggableView:(DraggableView)aDraggableView
+{
+  [[[self window] undoManager] registerUndoWithTarget:self selector:@selector(removeDraggableView:) object:aDraggableView];
+  [self addSubview:aDraggableView];
+}
+
+- (void)removeDraggableView:(DraggableView)aDraggableView
+{
+  [[[self window] undoManager] registerUndoWithTarget:self selector:@selector(addDraggableView:) object:aDraggableView];
+  [self addSubview:aDraggableView];
+
+  [aDraggableView removeFromSuperview];
+}
+
+// Received a draggable "drop"...
 - (void)performDragOperation:(CPDraggingInfo)aSender
 {
-  var data = [[aSender draggingPasteboard] dataForType:kPhotoDragType];
-  var dragImage = [CPKeyedUnarchiver unarchiveObjectWithData:data];
+  var draggableView = [CPKeyedUnarchiver unarchiveObjectWithData:[[aSender draggingPasteboard] dataForType:kPhotoDragType]],
+      location = [self convertPoint:[aSender draggingLocation] fromView:nil];
 
-  var imageSize = [dragImage size];
-  var imageFrame = CGRectMake(0.0, 0.0, imageSize.width, imageSize.height);
-  var imageView = [[CPImageView alloc] initWithFrame:imageFrame];
+  [draggableView setFrameOrigin:CGPointMake(location.x - CGRectGetWidth([draggableView frame]) / 2.0, location.y - CGRectGetHeight([draggableView frame]) / 2.0)];
 
-  [imageView setImage:dragImage];
-  [self addSubview:imageView];
+  [self addDraggableView:draggableView];
 }
 
 - (void)colorPanelDidChangeColor:(CPNotification)aNotification
@@ -125,48 +153,12 @@ const kDefaultShadowWeight = 2.0;
   [self setBackgroundColor:newColor];
 }
 
--(void)mouseDown:(CPEvent)anEvent
-{
-  CPLog("SLIDE VIEW");
-}
-
-- (BOOL)acceptsFirstResponder
-{
-  return YES;
-}
-
 - (void)deactivate
 {
   [[CPNotificationCenter defaultCenter]
         removeObserver:self
                   name:CPColorPanelColorDidChangeNotification
                 object:[CPColorPanel sharedColorPanel]];
-}
-
-// - (void)mouseDown:(CPEvent)event
-// {
-//   CPLog("SOMEWHERE");
-//   mMouseDownPoint = [self convertPoint:[event locationInWindow]
-//                               fromView:nil];
-// }
-
-
-@end
-
-@implementation SlideChildView : CPView
-{
-  SlideView  mSlideView;
-}
-
-- (id)initWithSlideView:(SlideView)aSlideView
-{
-  self = [super init];
-
-  if (self) {
-    mSlideView = aSlideView;
-  }
-
-  return self;
 }
 
 @end

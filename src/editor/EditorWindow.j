@@ -33,10 +33,11 @@ const kPublishItemIdentifier = "kPublishItemIdentifier";
   if (self != nil) {
     var toolbar = [[CPToolbar alloc] initWithIdentifier:"Photos"];
     [toolbar setDelegate:self];
-    [toolbar setVisible:true];
+    [toolbar setVisible:YES];
     [self setToolbar:toolbar];
 
-    editorView = [[EditorView alloc] initWithFrame:aContentRect];
+    var editorView = [[EditorView alloc] initWithFrame:aContentRect];
+    [editorView setAutoresizingMask:CPViewMinXMargin | CPViewMaxXMargin | CPViewMinYMargin | CPViewMaxYMargin];
     [self setContentView:editorView];
   }
 
@@ -95,7 +96,7 @@ const kPublishItemIdentifier = "kPublishItemIdentifier";
    [toolbarItem setAlternateImage: highlighted];
 
    [toolbarItem setTarget:[self windowController]];
-//   [toolbarItem setAction: @selector(add:)];
+   [toolbarItem setAction: @selector(spitOutViewXML:)];
    [toolbarItem setLabel: "Publish"];
 
    [toolbarItem setMinSize:CGSizeMake(32, 32)];

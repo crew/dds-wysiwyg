@@ -8,7 +8,9 @@
  *
  * ***** END LICENCE BLOCK ***** */
 
-import <AppKit/CPPanel.j>
+@import <AppKit/CPPanel.j>
+@import <AppKit/CPShadowView.j>
+@import "../slide/DraggableImage.j"
 
 kPhotoDragType = "kPhotoDragType";
 
@@ -21,8 +23,7 @@ kPhotoDragType = "kPhotoDragType";
 {
   self = [self initWithContentRect:CGRectMake(0.0, 0.0, 300.0, 400.0) styleMask:CPHUDBackgroundWindowMask | CPClosableWindowMask | CPResizableWindowMask];
 
-  if (self)
-{
+  if (self) {
   [self setTitle:@"Photos"];
   [self setFloatingPanel:YES];
 
@@ -40,7 +41,6 @@ kPhotoDragType = "kPhotoDragType";
 
   var itemPrototype = [[CPCollectionViewItem alloc] init];
   var photoView = [[PhotoView alloc] initWithFrame:CGRectMakeZero()];
-  [photoView setHasShadow:YES];
 
   [itemPrototype setView:photoView];
 
@@ -63,9 +63,11 @@ kPhotoDragType = "kPhotoDragType";
 
   for (var i = 0; i < [filenames count]; i++) {
     var filename = "resources/demos/" + [filenames objectAtIndex:i];
-    var image = [[CPImage alloc] initWithContentsOfFile:filename
-                                                   size:CGSizeMake(500.0, 430.0)];
-    [mImages addObject:image];
+    var image = [[CPImage alloc] initWithContentsOfFile:filename];
+
+    var draggableImage = [[DraggableImage alloc] initWithName:"FOO" image:image];
+    [image setDelegate:draggableImage];
+    [mImages addObject:draggableImage];
   }
 
   [photosView setContent:mImages];
@@ -87,14 +89,15 @@ kPhotoDragType = "kPhotoDragType";
 
 @end
 
-@implementation PhotoView : CPImageView
+@implementation PhotoView : CPShadowView
 {
   CPImageView mImageView;
+  BOOL mIsSelected;
 }
 
 - (void)setSelected:(BOOL)isSelected
 {
-  [self setBackgroundColor:isSelected ? [CPColor grayColor] : nil];
+  mIsSelected = isSelected;
 }
 
 - (void)setRepresentedObject:(id)anObject
@@ -109,7 +112,7 @@ kPhotoDragType = "kPhotoDragType";
   [self addSubview:mImageView];
 }
 
-  [mImageView setImage:anObject];
+  [mImageView setImage:[anObject image]];
 }
 
 @end

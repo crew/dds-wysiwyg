@@ -72,11 +72,6 @@ import "../slide/SlideView.j"
   return NO;
 }
 
-- (void)mouseUp:(CPEvent)event
-{
-
-}
-
 - (void)setupBorder
 {
   var bounds = [self bounds];
@@ -114,6 +109,8 @@ import "../slide/SlideView.j"
     mCurrentCanvasView = newCanvas;
     [mCanvasContainerView addSubview:mCurrentCanvasView];
   }
+
+  [[[[self window] windowController] document] setDocumentView:[newCanvas slideView]];
 }
 
 // Actions
