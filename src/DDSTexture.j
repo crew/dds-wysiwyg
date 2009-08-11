@@ -8,13 +8,13 @@
  *
  * ***** END LICENCE BLOCK ***** */
 
-@import <Foundation/Foundation.j>
-@import <AppKit/AppKit.j>
+@import "DDSGraphic.j"
 
-@import "AppController.j"
+@implementation DDSTexture : DDSGraphic
 
-
-function main(args, namedArgs)
-{
-    CPApplicationMain(args, namedArgs);
+- (id)init {
+  self = [super init];
+  if (self) {
+  }
+  return self;
 }

@@ -2,11 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CPApplicationDelegateClass</key>
-	<string>AppController</string>
+	<key>Main cib file base name</key>
+	<string>MainMenu.cib</string>
 	<key>CPBundleName</key>
-	<string>Twilight</string>
+	<string>wysiwyg</string>
 	<key>CPPrincipalClass</key>
 	<string>CPApplication</string>
+	<key>CPBundleDocumentTypes</key>
+        <array>
+          <dict>
+            <key>CPBundleTypeName</key>
+            <string>DDSlide</string>
+            <key>CFBundleTypeExtensions</key>
+            <array>
+              <string>dds</string>
+            </array>
+            <key>CPDocumentClass</key>
+            <string>SlideDocument</string>
+          </dict>
+        </array>
+
 </dict>
 </plist>
