@@ -6,80 +6,54 @@ Introduction
 Twilight is the web frontend for the Northeatern University Crew Digital
 Display System.
 
+
 System Requirements
 -------------------
 To run Cappuccino applications, all you need is a web browser that understands
 JavaScript.
 
-To build Cappuccino itself, you'll need the following tools:
+To build Cappuccino itself, please read more here :
 
-  - Java 1.5: http://www.java.com/
-  - Apache Ant: http://ant.apache.org/
-  - GCC: http://gcc.gnu.org/
+  - http://wiki.github.com/280north/cappuccino/getting-and-building-the-source
 
 If you're using Windows, you'll also need Cygwin: http://www.cygwin.com/
-
-Finally, if you want to easily stay up to date with the latest developments
-and contribute your work back to the Cappuccino community, you'll want to
-install Git: http://git-scm.com/
-
-
-Getting Started
----------------
-If you are reading this, you hopefully have checked out Twilight's source
-but still might need to get Cappuccino up and running.
 
 
 Setting Up Obj-J Environment
 ----------------------------
+To build Cappuccino from source, type "rake debug" from within the root of
+the Cappuccino directory.  "rake install" will build Cappuccino and associated
+tools and install them for general use.
 
- - Obtaining
 
-  git clone git://github.com/280north/cappuccino.git
+Getting Started
+---------------
+Once you have the Cappuccino source checked out from git and installed.
+Go to the root directory of the wysiwyg project and type "capp gen -f -l",
+this will create the 'Frameworks' directory needed for the web app and symlink
+the contents to the local Cappuccino build on your system.
 
- - Install Tools
 
-* Download http://cappuccino.org/tools
+Browser Settings / Tools
+---------------
+ * Make Gecko Just A Little Less Secure
+   1. In Firefox type about:config into the Location Bar (address bar) and press Enter.
+   2. Click the "I'll be carefull, I promise" button xD
+   3. Change the security.fileuri.strict to false
 
-  cd Tools/
-  chmod \+x install-tools
-  sudo sh ./install-tools
+ * Webkit Based Browsers (Safari, Chrome, et al)
+   1. For Safari on Mac enter "defaults write com.apple.Safari WebKitDeveloperExtras -bool true"
+      in Terminal.app, then relaunch Safari and notice the "Develop" menu.
+   2. Chrome has this under the Developer > Developer Tools menu.
 
- - Set paths
 
-Jeff's .zprofile:
-
-  export PATH=$PATH:/usr/bin
-  export OBJJ_HOME=/usr/local/share/objj
-  export STEAM_BUILD=~/Development/Cappuccino/Build
-
- - Build Cappuccino & Obj-J
-
-  cd YOUR_CAPPUCCINO_GIT_CLONE/
-  ant release
-
- -  Install Latest Tools
-
-  cd $STEAM_PATH/Cappuccino/Tools
-  sudo sh ./install-tools
-
- - Rebuild
-
-* Rebuild Cappuccino with instructions 2 steps back.
-
- = Using Latest Framework With Project
-
-  cd PROJ_DIR/
-  ln \-s $STEAM_BUILD/Release Frameworks
-
- - Make Gecko Just A Little Less Secure
-
-  1. Type about:config into the Location Bar (address bar) and press Enter.
-  2. Click the "I'll be carefull, I promise" button xD
-  3. Change the security.fileuri.strict to false
+Running
+-------
+In your browser of choice open "index-debug.html" and you should be set to start developing.
+When changes are made, just refresh (or 'shift + refresh') to see your changes. Errors will
+be displayed in the FireBug or WebKit Developer Tools console.
 
 
 Getting Help
 ------------
-If you need any help getting setup, feel free to jump on #dds on
-irc.ccs.neu.edu.
+If you need any help getting setup, feel free to jump on #dds on irc.ccs.neu.edu.
