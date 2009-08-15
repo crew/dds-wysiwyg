@@ -4,6 +4,8 @@
 <dict>
 	<key>Main cib file base name</key>
 	<string>MainMenu.cib</string>
+	<key>EditorWindow</key>
+	<string>EditorWindow.cib</string>
 	<key>CPBundleName</key>
 	<string>wysiwyg</string>
 	<key>CPPrincipalClass</key>

@@ -12,31 +12,41 @@
 
 @import "DDSGraphicView.j"
 
+const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
+  kRemoveSlideItemIdentifier = @"kRemoveSlideItemIdentifier",
+  kMediaInspectorItemIdentifier = @"kMediaInspectorItemIdentifier",
+  kInspectorItemIdentifier = @"kInspectorItemIdentifier",
+  kPublishSlideItemIdentifier = @"kPublishSlideItemIdentifier",
+  kHelpItemIdentifier = @"kHelpItemIdentifier",
+  kPreviewSlideItemIdentifier = @"kPreviewSlideItemIdentifier",
+  kAdjustItemIdentifier = @"kAdjustItemIdentifier";
+
 @implementation DDSWindowController : CPWindowController
 {
+//  CPWindow       mWindow;
+  CPView         mContentView;
+  CPToolbar      mToolbar;
 	DDSGraphicView mGraphicView;
 }
 
-- (id)init
+- (void)awakeFromCib
 {
-	var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(100.0, 100.0, 400.0, 300.0)
-                                              styleMask:CPTitledWindowMask | CPResizableWindowMask | CPClosableWindowMask];
-	var contentView = [theWindow contentView];
-  var bounds = [contentView bounds];
+//	var contentView = [[self window] contentView];
+  var bounds = [mContentView bounds];
 
-	mGraphicView = [[DDSGraphicView alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth(bounds) - 20, CGRectGetHeight(bounds) -20)];
+ 	mGraphicView = [[DDSGraphicView alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth(bounds) - 20, CGRectGetHeight(bounds) -20)];
   [mGraphicView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
 
-  [contentView addSubview:mGraphicView];
+  [mContentView addSubview:mGraphicView];
 
-	[theWindow makeFirstResponder:mGraphicView];
+	[[self window] makeFirstResponder:mGraphicView];
+  [[self window] makeFirstResponder:mGraphicView];
+  [[self window] setFullBridge:YES]
 
+  mToolbar = [[CPToolbar alloc] initWithIdentifier:@"EditingToolbar"];
 
-  self = [super initWithWindow:theWindow];
-  if (self) {
-  }
-
-  return self;
+  [mToolbar setDelegate:self];
+  [[self window] setToolbar:mToolbar];
 }
 
 -(DDSGraphicView)graphicView
@@ -66,6 +76,139 @@
 - (void)setSelectionIndexes:(CPIndexSet)selectionIndexes
 {
 	[[self document] setSelectionIndexes:selectionIndexes];
+}
+
+- (CPArray)toolbarAllowedItemIdentifiers:(CPToolbar)aToolbar
+{
+  return [
+    kAddSlideItemIdentifier, kRemoveSlideItemIdentifier,
+                           kMediaInspectorItemIdentifier, kInspectorItemIdentifier,
+                           kPublishSlideItemIdentifier, kHelpItemIdentifier,
+                           CPToolbarSeparatorItemIdentifier, kPreviewSlideItemIdentifier,
+                           CPToolbarSpaceItemIdentifier, kAdjustItemIdentifier,
+                           CPToolbarFlexibleSpaceItemIdentifier];
+}
+
+- (CPArray)toolbarDefaultItemIdentifiers:(CPToolbar)aToolbar
+{
+  return [
+    kAddSlideItemIdentifier,
+                           kRemoveSlideItemIdentifier,
+                           CPToolbarSeparatorItemIdentifier,
+                           kPreviewSlideItemIdentifier,
+                           kPublishSlideItemIdentifier,
+                           CPToolbarFlexibleSpaceItemIdentifier,
+                           kInspectorItemIdentifier,
+                           kMediaInspectorItemIdentifier,
+                           kAdjustItemIdentifier
+          ];
+}
+
+- (CPToolbarItem)toolbar:(CPToolbar)aToolbar itemForItemIdentifier:(CPString)anItemIdentifier willBeInsertedIntoToolbar:(BOOL)aFlag
+{
+  if (anItemIdentifier === kAddSlideItemIdentifier) {
+    return [self itemWithImageName:@"blueprint.png"
+                            imgAlt:@"AddAlt.png"
+                             ident:anItemIdentifier
+                             label:@"New Slide"
+                            action:@selector(addSlide:)
+                              size:CGSizeMake(32,32)];
+  }
+
+  else if (anItemIdentifier === kRemoveSlideItemIdentifier) {
+    return [self itemWithImageName:@"Remove.png"
+                            imgAlt:@"RemoveAlt.png"
+                             ident:anItemIdentifier
+                             label:@"Delete Slide"
+                            action:@selector(removeSlide:)
+                              size:CGSizeMake(32,32)];
+  }
+
+  else if (anItemIdentifier === kMediaInspectorItemIdentifier) {
+    var item = [self itemWithImageName:@"MediaBrowser.png"
+                                imgAlt:@"MediaBrowserAlt.png"
+                                 ident:anItemIdentifier
+                                 label:@"Media"
+                                action:@selector(orderFront:)
+                                  size:CGSizeMake(32,32)];
+
+//    [item setTarget:mMediaPanel];
+    return item;
+  }
+
+  else if (anItemIdentifier === kInspectorItemIdentifier) {
+    var item =  [self itemWithImageName:@"GetInfo.png"
+                                 imgAlt:@"GetInfoAlt.png"
+                                  ident:anItemIdentifier
+                                  label:@"Inspector"
+                                 action:@selector(orderFront:)
+                                   size:CGSizeMake(32,32)];
+
+//    [item setTarget:mInspectorPanel];
+    return item;
+  }
+
+  else if (anItemIdentifier === kPublishSlideItemIdentifier) {
+    return [self itemWithImageName:@"Publish.png"
+                            imgAlt:@"PublishAlt.png"
+                             ident:anItemIdentifier
+                             label:@"Publish"
+                            action:@selector(publishSlide:)
+                              size:CGSizeMake(32,32)];
+  }
+
+  else if (anItemIdentifier === kHelpItemIdentifier) {
+    return [self itemWithImageName:@"Help.png"
+                            imgAlt:@"HelpAlt.png"
+                             ident:anItemIdentifier
+                             label:@"Help"
+                            action:@selector(showHelp:)
+                              size:CGSizeMake(32,32)];
+  }
+
+  else if (anItemIdentifier === kPreviewSlideItemIdentifier) {
+    return [self itemWithImageName:@"Play.png"
+                            imgAlt:@"PlayAlt.png"
+                             ident:anItemIdentifier
+                             label:@"Preview"
+                            action:@selector(previewSlide:)
+                              size:CGSizeMake(32,32)];
+  }
+
+  else if (anItemIdentifier === kAdjustItemIdentifier) {
+    var item =  [self itemWithImageName:@"HUD.png"
+                                 imgAlt:@"HUDAlt.png"
+                                  ident:anItemIdentifier
+                                  label:@"Adjust"
+                                 action:@selector(orderFront:)
+                                   size:CGSizeMake(32,32)];
+
+    //  [item setTarget:mAdjustPanel];
+    return item;
+  }
+
+  return null;
+}
+
+- (CPToolbarItem)itemWithImageName:(CPString)aImgName imgAlt:(CPString)aImgAlt ident:(CPString)anItemIdentifier label:(CPString)aLabel action:(SEL)aSelector size:(CGSize)aSize
+{
+  var toolbarItem = [[CPToolbarItem alloc] initWithItemIdentifier:anItemIdentifier];
+  var mainBundle = [CPBundle mainBundle];
+
+  var image = [[CPImage alloc] initWithContentsOfFile:[mainBundle pathForResource:aImgName] size:aSize];
+  var highlighted = [[CPImage alloc] initWithContentsOfFile:[mainBundle pathForResource:aImgAlt] size:aSize];
+
+  [toolbarItem setImage:image];
+  [toolbarItem setAlternateImage:highlighted];
+
+  [toolbarItem setTarget:self];
+  [toolbarItem setAction:aSelector];
+  [toolbarItem setLabel:aLabel];
+
+  [toolbarItem setMinSize:CGSizeMake(32, 32)];
+  [toolbarItem setMaxSize:CGSizeMake(32, 32)];
+
+  return toolbarItem;
 }
 
 @end

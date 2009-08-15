@@ -30,68 +30,56 @@
 	CPString mTest;
 }
 
-- (id)init
+- (void)awakeFromCib
 {
-  self = [super init];
-  if (self) {
-    mGraphics = [CPArray array];
-    mSelectionIndexes = [CPIndexSet indexSet];
+  mGraphics = [CPArray array];
+  mSelectionIndexes = [CPIndexSet indexSet];
 
-    mTest = @"cappuccino";
+  mTest = @"cappuccino";
 
-    var graphic = [[DDSRectangle alloc] init];
-    [graphic setXPosition:10.0];
-    [graphic setYPosition:10.0];
-    [graphic setWidth:100.0];
-    [graphic setHeight:100.0];
-    [graphic setIsDrawingFill:YES];
-    [graphic setFillColor:[CPColor redColor]];
-    [graphic setStrokeColor:[CPColor blueColor]];
+  var graphic = [[DDSRectangle alloc] init];
+  [graphic setXPosition:10.0];
+  [graphic setYPosition:10.0];
+  [graphic setWidth:100.0];
+  [graphic setHeight:100.0];
+  [graphic setIsDrawingFill:YES];
+  [graphic setFillColor:[CPColor redColor]];
+  [graphic setStrokeColor:[CPColor blueColor]];
 
-    [mGraphics addObject:graphic];
+  [mGraphics addObject:graphic];
 
-    graphic = [[DDSRectangle alloc] init];
-    [graphic setXPosition:100.0];
-    [graphic setYPosition:20.0];
-    [graphic setWidth:100.0];
-    [graphic setHeight:100.0];
-    [graphic setIsDrawingFill:YES];
-    [graphic setFillColor:[CPColor greenColor]];
-    [graphic setStrokeColor:[CPColor blueColor]];
+  graphic = [[DDSRectangle alloc] init];
+  [graphic setXPosition:100.0];
+  [graphic setYPosition:20.0];
+  [graphic setWidth:100.0];
+  [graphic setHeight:100.0];
+  [graphic setIsDrawingFill:YES];
+  [graphic setFillColor:[CPColor greenColor]];
+  [graphic setStrokeColor:[CPColor blueColor]];
 
-    [mGraphics addObject:graphic];
+  [mGraphics addObject:graphic];
 
-    graphic = [[DDSCircle alloc] init];
-    [graphic setXPosition:150.0];
-    [graphic setYPosition:150.0];
-    [graphic setWidth:100.0];
-    [graphic setHeight:100.0];
-    [graphic setIsDrawingFill:YES];
-    [graphic setFillColor:[CPColor blueColor]];
-    [graphic setStrokeColor:[CPColor redColor]];
+  graphic = [[DDSCircle alloc] init];
+  [graphic setXPosition:150.0];
+  [graphic setYPosition:150.0];
+  [graphic setWidth:100.0];
+  [graphic setHeight:100.0];
+  [graphic setIsDrawingFill:YES];
+  [graphic setFillColor:[CPColor blueColor]];
+  [graphic setStrokeColor:[CPColor redColor]];
 
-    [mGraphics addObject:graphic];
+  [mGraphics addObject:graphic];
 
-    graphic = [[DDSLine alloc] init];
-    [graphic setBeginPoint:CPPointMake(200.0, 10.0)];
-    [graphic setEndPoint:CPPointMake(250.0, 110.0)];
-    [graphic setStrokeColor:[CPColor greenColor]];
+  graphic = [[DDSLine alloc] init];
+  [graphic setBeginPoint:CPPointMake(200.0, 10.0)];
+  [graphic setEndPoint:CPPointMake(250.0, 110.0)];
+  [graphic setStrokeColor:[CPColor greenColor]];
 
-    [mGraphics addObject:graphic];
+  [mGraphics addObject:graphic];
 
-    [mSelectionIndexes addIndex:0];
-    [mSelectionIndexes addIndex:2];
-  }
-
-  return self;
+  [mSelectionIndexes addIndex:0];
+  [mSelectionIndexes addIndex:2];
 }
-
-- (void)makeWindowControllers
-{
-  var controller = [[DDSWindowController alloc] init];
-  [self addWindowController:controller];
-}
-
 
 - (CPArray)graphics
 {
@@ -108,9 +96,9 @@
 	mSelectionIndexes = selectionIndexes;
 }
 
-// - (CPString)windowCibName
-// {
-//   return @"EditorWindow";
-// }
+- (CPString)windowCibName
+{
+  return @"EditorWindow";
+}
 
 @end
