@@ -74,8 +74,7 @@ const kRatioHeight = 1080;
 - (id)initWithFrame:(CPRect)frame
 {
   self = [super initWithFrame:frame];
-  if (self)
-{
+  if (self){
   _marqueeSelectionBounds = CPRectMakeZero();
 
   // Initalize the cascading of pasted graphics.
@@ -791,7 +790,7 @@ event = [[self window] nextEventMatchingMask:(CPLeftMouseDraggedMask | CPLeftMou
 
   if (type == CPLeftMouseUp)
 {
-  console.log("swallowMouseEvents");
+//  console.log("swallowMouseEvents");
   return;
 }
 

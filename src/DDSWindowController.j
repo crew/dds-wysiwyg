@@ -11,6 +11,8 @@
 @import <AppKit/CPWindowController.j>
 
 @import "DDSGraphicView.j"
+@import "DDSGraphicContainer.j"
+//@import "UploadButton.j"
 
 const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
   kRemoveSlideItemIdentifier = @"kRemoveSlideItemIdentifier",
@@ -26,21 +28,38 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
 //  CPWindow       mWindow;
   CPView         mContentView;
   CPToolbar      mToolbar;
-	DDSGraphicView mGraphicView;
+	DDSGraphicContainer mGraphicContainer;
+  CPPanel        mMediaPanel;
+  CPPanel        mInspectorPanel;
+  CPPanel        mAdjustPanel;
+  UploadButton   mUploadButton;
 }
 
 - (void)awakeFromCib
 {
+  // mUploadButton = [[UploadButton alloc] initWithFrame: CGRectMake(50, 10, 0, 0)] ;
+	// [mUploadButton setTitle:"Select File"] ;
+	// //globalURL = [[CPString alloc] initWithString:@"http://host"];
+	// //globalURL = [[CPString alloc] initWithString:@"http://0.0.0.0:3000"];
+  // globalURL = [[CPString alloc] initWithString:@"http://dds.ccs.neu.edu/dds/assets/add/"];
+
+	// [mUploadButton setURL:globalURL];
+	// [mUploadButton setDelegate: self];
+	// [mUploadButton sizeToFit];
+	// [mUploadButton setAutoresizingMask:CPViewMinXMargin |
+	// 			                      CPViewMaxXMargin] ;
+	// [[mMediaPanel contentView] addSubview:mUploadButton];
+
+  // console.log('goooo');
+  //[[self window] setWindowController:self];
 //	var contentView = [[self window] contentView];
+// 	mGraphicView = [[DDSGraphicView alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth(bounds) - 20, CGRectGetHeight(bounds) -20)];
+//  [mGraphicView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
+
+  //[mContentView addSubview:mGraphicView];
+
+//  [[self window] makeFirstResponder:mGraphicView];
   var bounds = [mContentView bounds];
-
- 	mGraphicView = [[DDSGraphicView alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth(bounds) - 20, CGRectGetHeight(bounds) -20)];
-  [mGraphicView setAutoresizingMask:CPViewWidthSizable | CPViewHeightSizable];
-
-  [mContentView addSubview:mGraphicView];
-
-	[[self window] makeFirstResponder:mGraphicView];
-  [[self window] makeFirstResponder:mGraphicView];
   [[self window] setFullBridge:YES]
 
   mToolbar = [[CPToolbar alloc] initWithIdentifier:@"EditingToolbar"];
@@ -107,8 +126,8 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
 - (CPToolbarItem)toolbar:(CPToolbar)aToolbar itemForItemIdentifier:(CPString)anItemIdentifier willBeInsertedIntoToolbar:(BOOL)aFlag
 {
   if (anItemIdentifier === kAddSlideItemIdentifier) {
-    return [self itemWithImageName:@"blueprint.png"
-                            imgAlt:@"AddAlt.png"
+    return [self itemWithImageName:@"blueprint-add.png"
+                            imgAlt:@"blueprint-add_alt.png"
                              ident:anItemIdentifier
                              label:@"New Slide"
                             action:@selector(addSlide:)
@@ -116,8 +135,8 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
   }
 
   else if (anItemIdentifier === kRemoveSlideItemIdentifier) {
-    return [self itemWithImageName:@"Remove.png"
-                            imgAlt:@"RemoveAlt.png"
+    return [self itemWithImageName:@"blueprint-delete.png"
+                            imgAlt:@"blueprint-delete_alt.png"
                              ident:anItemIdentifier
                              label:@"Delete Slide"
                             action:@selector(removeSlide:)
@@ -132,7 +151,7 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
                                 action:@selector(orderFront:)
                                   size:CGSizeMake(32,32)];
 
-//    [item setTarget:mMediaPanel];
+    [item setTarget:mMediaPanel];
     return item;
   }
 
@@ -144,7 +163,7 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
                                  action:@selector(orderFront:)
                                    size:CGSizeMake(32,32)];
 
-//    [item setTarget:mInspectorPanel];
+    [item setTarget:mInspectorPanel];
     return item;
   }
 
@@ -183,7 +202,7 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
                                  action:@selector(orderFront:)
                                    size:CGSizeMake(32,32)];
 
-    //  [item setTarget:mAdjustPanel];
+    [item setTarget:mAdjustPanel];
     return item;
   }
 
@@ -209,6 +228,13 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
   [toolbarItem setMaxSize:CGSizeMake(32, 32)];
 
   return toolbarItem;
+}
+
+- (IBAction)uploadFile:(id)sender
+{
+  [mUploadButton setValue:@"foo" forParameter:@"name"];
+  [mUploadButton setValue:@"this is some text" forParameter:@"description"];
+  [mUploadButton submit];
 }
 
 @end
