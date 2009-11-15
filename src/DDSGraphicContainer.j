@@ -31,7 +31,8 @@
 
   if (self) {
     mGraphicView = [[DDSGraphicView alloc] initWithFrame:CGRectInset([self bounds], 20, 20)];
-    [mGraphicView setAutoresizingMask: CPViewHeightSizable | CPViewWidthSizable]
+    [mGraphicView setAutoresizingMask: CPViewHeightSizable | CPViewWidthSizable];
+    [mGraphicView setAutoresizesSubviews:YES];
     [self addSubview:mGraphicView];
 
     // Add shadow

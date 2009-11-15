@@ -10,6 +10,7 @@
 
 @import <Foundation/CPObject.j>
 @import "SlideDocument.j"
+@import "CPApplication+MediaKitAdditions.j"
 
 @implementation AppController : CPObject
 {
@@ -34,15 +35,18 @@
 
   var menuColors = [CPDictionary dictionary];
 
-  [menuColors setValue:[CPColor blackColor] forKey:@"CPMenuBarBackgroundColor"];
-  [menuColors setValue:[CPColor grayColor] forKey:@"CPMenuBarTextColor"];
-  [menuColors setValue:[CPColor whiteColor] forKey:@"CPMenuBarTitleColor"];
-  [menuColors setValue:[CPColor clearColor] forKey:@"CPMenuBarTextShadowColor"];
-  [menuColors setValue:[CPColor clearColor] forKey:@"CPMenuBarTitleShadowColor"];
-  [menuColors setValue:[CPColor whiteColor] forKey:@"CPMenuBarHighlightColor"];
-  [menuColors setValue:[CPColor grayColor] forKey:@"CPMenuBarHighlightTextColor"];
-  [menuColors setValue:[CPColor clearColor] forKey:@"CPMenuBarHighlightTextShadowColor"];
 
+  [menuColors setObject:[CPColor colorWithCalibratedRed:204.0/255.0 green:204.0/255.0 blue:204.0/255.0 alpha:1.0] forKey:@"CPMenuBarTextColor"];
+  [menuColors setObject:[CPColor colorWithCalibratedRed:177.0/255.0 green:177.0/255.0 blue:177.0/255.0 alpha:1.0] forKey:@"CPMenuBarTitleColor"];
+  [menuColors setObject:[CPColor clearColor] forKey:@"CPMenuBarTextShadowColor"];
+  [menuColors setObject:[CPColor colorWithCalibratedRed:115.0/255.0 green:115.0/255.0 blue:115.0/255.0 alpha:1.0] forKey:@"CPMenuBarTitleShadowColor"];
+  [menuColors setObject:[CPColor whiteColor] forKey:@"CPMenuBarHighlightColor"];
+  [menuColors setObject:[CPColor grayColor] forKey:@"CPMenuBarHighlightTextColor"];
+  [menuColors setObject:[CPColor clearColor] forKey:@"CPMenuBarHighlightTextShadowColor"];
+  [menuColors setObject:[CPColor colorWithCalibratedRed:244.0/255.0 green:244.0/255.0 blue:244.0/255.0 alpha:1.0] forKey:@"CPMenuBarHighlightColor"];
+
+  var bgColor = [CPColor colorWithPatternImage:[[CPImage alloc] initWithContentsOfFile:@"Resources/menu_background.png" size:CGSizeMake(1.0, 18.0)]];
+  [menuColors setObject:bgColor forKey:@"CPMenuBarBackgroundColor"];
   [CPMenu setMenuBarAttributes:menuColors];
 }
 

@@ -81,13 +81,14 @@ const kRatioHeight = 1080;
   _pasteboardChangeCount = -1;
   _pasteCascadeNumber = 0;
   _pasteCascadeDelta = CPMakePoint(DDSGraphicViewDefaultPasteCascadeDelta, DDSGraphicViewDefaultPasteCascadeDelta);
+  [self registerForDraggedTypes:[CPImagesPboardType]];
 }
   return self;
 }
 
 - (CPArray)graphics
 {
-  var graphics = [[[self window] windowController] graphics];
+ var graphics = [[[self window] windowController] graphics];
   if (!graphics) {
 		graphics = [CPArray array];
   }
@@ -1078,6 +1079,32 @@ event = [[self window] nextEventMatchingMask:(CPLeftMouseDraggedMask | CPLeftMou
   var divOrigWhole = crossMult / aWhole;
 
   return Math.floor(divOrigWhole);
+}
+
+- (void)performDragOperation:(CPDraggingInfo)aSender
+{
+  var draggedImage = [CPKeyedUnarchiver unarchiveObjectWithData:[[aSender draggingPasteboard] dataForType:CPImagesPboardType]];
+
+  var graphic = [[DDSRectangle alloc] init];
+  [graphic setXPosition:100.0];
+  [graphic setYPosition:100.0];
+  [graphic setWidth:1000.0];
+  [graphic setHeight:100.0];
+  [graphic setIsDrawingFill:YES];
+  [graphic setFillColor:[CPColor redColor]];
+  [graphic setStrokeColor:[CPColor blueColor]];
+
+  [[self graphics] addObject:graphic];
+}
+
+- (void)draggingEntered:(CPDraggingInfo)aSender
+{
+
+}
+
+- (void)draggingExited:(CPDraggingInfo)aSender
+{
+
 }
 
 @end

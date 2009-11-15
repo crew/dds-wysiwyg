@@ -30,8 +30,10 @@
 	CPString mTest;
 }
 
-- (void)awakeFromCib
+- (id)init
 {
+  self = [super init];
+  if (self) {
   mGraphics = [CPArray array];
   mSelectionIndexes = [CPIndexSet indexSet];
 
@@ -79,6 +81,8 @@
 
   [mSelectionIndexes addIndex:0];
   [mSelectionIndexes addIndex:2];
+  }
+  return self;
 }
 
 - (CPArray)graphics
@@ -100,5 +104,13 @@
 {
   return @"EditorWindow";
 }
+
+- (void)makeWindowControllers
+{
+//  console.trace();
+  var controller = [[DDSWindowController alloc] initWithWindowCibName:[self windowCibName]];
+  [self addWindowController:controller];
+}
+
 
 @end

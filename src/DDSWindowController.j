@@ -148,10 +148,10 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
                                 imgAlt:@"MediaBrowserAlt.png"
                                  ident:anItemIdentifier
                                  label:@"Media"
-                                action:@selector(orderFront:)
+                                action:@selector(orderFrontMediaPanel:)
                                   size:CGSizeMake(32,32)];
 
-    [item setTarget:mMediaPanel];
+    [item setTarget:[CPApplication sharedApplication]];
     return item;
   }
 
