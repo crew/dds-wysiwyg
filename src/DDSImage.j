@@ -9,48 +9,55 @@
  * ***** END LICENCE BLOCK ***** */
 
 @import "DDSGraphic.j"
+@import <AppKit/CPImage.j>
 
 @implementation DDSImage : DDSGraphic
+{
+  CPImage mImage;
+}
 
-- (id)init {
+- (id)initWithImage:(CPImage)aImage {
   self = [super init];
   if (self) {
+    mImage = aImage;
   }
   return self;
 }
 
-- (CGPath)bezierPathForDrawing
+- (void)drawContentsInView:(CPView)view isBeingCreateOrEdited:(BOOL)isBeingCreatedOrEditing
 {
-	var path = CGPathCreateMutable();
-	var rect = [self bounds];
+  if([mImage loadStatus] == CPImageLoadStatusCompleted) {
 
-	CGPathAddRect(path, nil, rect);
-	CGPathCloseSubpath(path);
+    var context = [[CPGraphicsContext currentContext] graphicsPort];
+    var rect = [self bounds];
 
-  return path;
+    if (mImage) {
+      CGContextDrawImage(context, rect, mImage);
+    }
+  }
 }
 
 - (id)serializeToJSON
 {
   // Create the object
-  var rectangleJSONObject = {
+  var imageJSONObject = {
     "id" : [CPString UUID],
     "type" : [self clutterType],
+    "filename" : [mImage filename],
     "x" : [self xPosition],
     "y" :  [self yPosition],
     "width" : [self width],
     "height" : [self height],
-    "color" : "#"+[[self fillColor] hexString],
     "opacity": 255,
     "visible" : true
   };
 
-  return rectangleJSONObject;
+  return imageJSONObject;
 }
 
 - (CPString)clutterType
 {
-  return "ClutterRectangle";
+  return "ClutterTexture";
 }
 
 @end

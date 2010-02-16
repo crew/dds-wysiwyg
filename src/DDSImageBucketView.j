@@ -78,6 +78,9 @@ PhotoDragType = "PhotoDragType";
   return [PhotoDragType];
 }
 
+@end
+
+
 @implementation PhotoView : CPImageView
 {
   CPImageView _imageView;

@@ -32,7 +32,7 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
   CPPanel        mMediaPanel;
   CPPanel        mInspectorPanel;
   CPPanel        mAdjustPanel;
-  UploadButton   mUploadButton;
+//  UploadButton   mUploadButton;
 }
 
 - (void)awakeFromCib
@@ -230,11 +230,11 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
   return toolbarItem;
 }
 
-- (IBAction)uploadFile:(id)sender
-{
-  [mUploadButton setValue:@"foo" forParameter:@"name"];
-  [mUploadButton setValue:@"this is some text" forParameter:@"description"];
-  [mUploadButton submit];
-}
+// - (IBAction)uploadFile:(id)sender
+// {
+//   [mUploadButton setValue:@"foo" forParameter:@"name"];
+//   [mUploadButton setValue:@"this is some text" forParameter:@"description"];
+//   [mUploadButton submit];
+// }
 
 @end

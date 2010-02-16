@@ -14,6 +14,7 @@
 
 @import "DDSToolPaletteController.j"
 @import "DDSGraphic.j"
+@import "DDSImage.j"
 @import "DDSGrid.j"
 
 // The default value by which repetitively pasted sets of graphics are offset from each other,
@@ -328,85 +329,76 @@ const kRatioHeight = 1080;
 {
   var type = [event type];
 
-  if (type == CPLeftMouseUp)
-{
-  // if (echoToRulers)  {
-  //    [self stopEchoingMoveToRulers];
-  // }
+  if (type == CPLeftMouseUp) {
+    // if (echoToRulers)  {
+    //    [self stopEchoingMoveToRulers];
+    // }
 
-  if (_isMoving)
-{
-  _isHidingHandles = NO;
+    if (_isMoving) {
+      _isHidingHandles = NO;
 
-  [self setNeedsDisplayInRect:[DDSGraphic drawingBoundsOfGraphics:_selGraphics]];
-  if (_didMove)
-{
-  // Only if we really moved.
-  // [[self undoManager] setActionName:NSLocalizedStringFromTable(@"Move", @"UndoStrings", @"Action name for moves.")];
-}
-}
+      [self setNeedsDisplayInRect:[DDSGraphic drawingBoundsOfGraphics:_selGraphics]];
+      if (_didMove) {
+        // Only if we really moved.
+        // [[self undoManager] setActionName:NSLocalizedStringFromTable(@"Move", @"UndoStrings", @"Action name for moves.")];
+      }
+    }
 
-  return;
-}
+    return;
+  }
 
-  if (type == CPLeftMouseDown)
-{
-  _selGraphics = [self selectedGraphics];
-  var c = [_selGraphics count];
-  //var echoToRulers = [[self enclosingScrollView] rulersVisible];
-  var selBounds = [[DDSGraphic self] boundsOfGraphics:_selGraphics];
+  if (type == CPLeftMouseDown) {
+    _selGraphics = [self selectedGraphics];
+    var c = [_selGraphics count];
+    //var echoToRulers = [[self enclosingScrollView] rulersVisible];
+    var selBounds = [[DDSGraphic self] boundsOfGraphics:_selGraphics];
 
-  _didMove = NO;
-  _isMoving = NO;
+    _didMove = NO;
+    _isMoving = NO;
 
-  _lastPoint = [self convertPoint:[event locationInWindow] fromView:nil];
-  _selOriginOffset = CPMakePoint((_lastPoint.x - selBounds.origin.x), (_lastPoint.y - selBounds.origin.y));
+    _lastPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+    _selOriginOffset = CPMakePoint((_lastPoint.x - selBounds.origin.x), (_lastPoint.y - selBounds.origin.y));
 
-  // if (echoToRulers) {
-  //    [self beginEchoingMoveToRulers:selBounds];
-  // }
+    // if (echoToRulers) {
+    //    [self beginEchoingMoveToRulers:selBounds];
+    // }
 
-}
-  else if (type == CPLeftMouseDragged)
-{
-  [self autoscroll:event];
-  var curPoint = [self convertPoint:[event locationInWindow] fromView:nil];
-  if (!_isMoving && ((Math.abs(curPoint.x - _lastPoint.x) >= 2.0) || (Math.abs(curPoint.y - _lastPoint.y) >= 2.0)))
-{
-  _isMoving = YES;
-  _isHidingHandles = YES;
-}
+  }
+  else if (type == CPLeftMouseDragged) {
+    [self autoscroll:event];
+    var curPoint = [self convertPoint:[event locationInWindow] fromView:nil];
+    if (!_isMoving && ((Math.abs(curPoint.x - _lastPoint.x) >= 2.0) || (Math.abs(curPoint.y - _lastPoint.y) >= 2.0))) {
+      _isMoving = YES;
+      _isHidingHandles = YES;
+    }
 
-  if (_isMoving)
-{
-  if (_grid)
-{
-  var boundsOrigin = CPMakePoint((curPoint.x - _selOriginOffset.x), (curPoint.y - _selOriginOffset.y));
-  boundsOrigin  = [_grid constrainedPoint:boundsOrigin];
-  curPoint.x = (boundsOrigin.x + _selOriginOffset.x);
-  curPoint.y = (boundsOrigin.y + _selOriginOffset.y);
-}
+    if (_isMoving) {
+      if (_grid) {
+        var boundsOrigin = CPMakePoint((curPoint.x - _selOriginOffset.x), (curPoint.y - _selOriginOffset.y));
+        boundsOrigin  = [_grid constrainedPoint:boundsOrigin];
+        curPoint.x = (boundsOrigin.x + _selOriginOffset.x);
+        curPoint.y = (boundsOrigin.y + _selOriginOffset.y);
+      }
 
-  if (! CPPointEqualToPoint(_lastPoint, curPoint))
-{
-  [[DDSGraphic class] translateGraphics:_selGraphics byX:(curPoint.x - _lastPoint.x) y:(curPoint.y - _lastPoint.y)];
-  _didMove = YES;
+      if (! CPPointEqualToPoint(_lastPoint, curPoint)) {
+        [[DDSGraphic class] translateGraphics:_selGraphics byX:(curPoint.x - _lastPoint.x) y:(curPoint.y - _lastPoint.y)];
+        _didMove = YES;
 
-  [self setNeedsDisplay:YES];
+        [self setNeedsDisplay:YES];
 
-  // if (echoToRulers) {
-  //	[self continueEchoingMoveToRulers:NSMakeRect(curPoint.x - selOriginOffset.x, curPoint.y - selOriginOffset.y, NSWidth(selBounds),NSHeight(selBounds))];
-  // }
+        // if (echoToRulers) {
+        //	[self continueEchoingMoveToRulers:NSMakeRect(curPoint.x - selOriginOffset.x, curPoint.y - selOriginOffset.y, NSWidth(selBounds),NSHeight(selBounds))];
+        // }
 
-  // Adjust the delta that is used for cascading pastes.
-  // Pasting and then moving the pasted graphic is the way you determine the cascade delta for subsequent pastes.
-  _pasteCascadeDelta.x += (curPoint.x - _lastPoint.x);
-  _pasteCascadeDelta.y += (curPoint.y - _lastPoint.y);
-}
+        // Adjust the delta that is used for cascading pastes.
+        // Pasting and then moving the pasted graphic is the way you determine the cascade delta for subsequent pastes.
+        _pasteCascadeDelta.x += (curPoint.x - _lastPoint.x);
+        _pasteCascadeDelta.y += (curPoint.y - _lastPoint.y);
+      }
 
-  _lastPoint = curPoint;
-}
-}
+      _lastPoint = curPoint;
+    }
+  }
 
   [CPApp setTarget:self selector:@selector(moveSelectedGraphicsWithEvent:) forNextEventMatchingMask:CPLeftMouseDraggedMask | CPLeftMouseUpMask untilDate:nil inMode:nil dequeue:YES];
 }
@@ -493,53 +485,49 @@ const kRatioHeight = 1080;
 {
   var type = [event type];
 
-  if (type == CPLeftMouseUp)
-{
-  // DDSL : We use resizeGraphic: to resize the newly created object or to resize ususal objects
-  if (_creatingGraphic)
-{
-  // Did we really create a graphic? Don't check with !NSIsEmptyRect(createdGraphicBounds) because the bounds of
-  // a perfectly horizontal or vertical line is "empty" but of course we want to let people create those.
-  var createdGraphicBounds = [_creatingGraphic bounds];
-  if (CPRectGetWidth(createdGraphicBounds) != 0.0 || CPRectGetHeight(createdGraphicBounds) != 0.0)
-{
-  // Select it.
-  [self changeSelectionIndexes:[CPIndexSet indexSetWithIndex:0]];
+  if (type == CPLeftMouseUp) {
+    // DDSL : We use resizeGraphic: to resize the newly created object or to resize ususal objects
+    if (_creatingGraphic) {
+      // Did we really create a graphic? Don't check with !NSIsEmptyRect(createdGraphicBounds) because the bounds of
+      // a perfectly horizontal or vertical line is "empty" but of course we want to let people create those.
+      var createdGraphicBounds = [_creatingGraphic bounds];
+      if (CPRectGetWidth(createdGraphicBounds) != 0.0 || CPRectGetHeight(createdGraphicBounds) != 0.0) {
+        // Select it.
+        [self changeSelectionIndexes:[CPIndexSet indexSetWithIndex:0]];
 
-  // The graphic wasn't sized to nothing during mouse tracking. Present its editing interface it if it's that kind of graphic (like Sketch's DDSTexts).
-  // Invokers of the method we're in right now should have already cleared out _editingView.
-  [self startEditingGraphic:_creatingGraphic];
+        // The graphic wasn't sized to nothing during mouse tracking. Present its editing interface it if it's that kind of graphic (like Sketch's DDSTexts).
+        // Invokers of the method we're in right now should have already cleared out _editingView.
+        [self startEditingGraphic:_creatingGraphic];
 
-  // Overwrite whatever undo action name was registered during all of that with a more specific one.
-  // [undoManager setActionName:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Create %@", @"UndoStrings", @"Action name for newly created graphics. Class name is inserted at the substitution."), [[NSBundle mainBundle] localizedStringForKey:NSStringFromClass(graphicClass) value:@"" table:@"GraphicClassNames"]]];
+        // Overwrite whatever undo action name was registered during all of that with a more specific one.
+        // [undoManager setActionName:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Create %@", @"UndoStrings", @"Action name for newly created graphics. Class name is inserted at the substitution."), [[NSBundle mainBundle] localizedStringForKey:NSStringFromClass(graphicClass) value:@"" table:@"GraphicClassNames"]]];
 
-  // Balance the invocation of -[NSUndoManager beginUndoGrouping] that we did up above.
-  // [undoManager endUndoGrouping];
-}
+        // Balance the invocation of -[NSUndoManager beginUndoGrouping] that we did up above.
+        // [undoManager endUndoGrouping];
+      }
 
-  [self setNeedsDisplay:YES];
+      [self setNeedsDisplay:YES];
 
-  // Done.
-  _creatingGraphic = nil;
-}
+      // Done.
+      _creatingGraphic = nil;
+    }
 
-  return;
-}
-
-	if (type == CPLeftMouseDragged)
-{
-  [self autoscroll:event];
-
-  var handleLocation = [self convertPoint:[event locationInWindow] fromView:nil];
-
-  if (_grid) {
-    handleLocation = [_grid constrainedPoint:handleLocation];
+    return;
   }
 
-  _resizedHandle = [_resizedGraphic resizeByMovingHandle:_resizedHandle toPoint:handleLocation];
+	if (type == CPLeftMouseDragged) {
+    [self autoscroll:event];
 
-  [self setNeedsDisplay:YES];
-}
+    var handleLocation = [self convertPoint:[event locationInWindow] fromView:nil];
+
+    if (_grid) {
+      handleLocation = [_grid constrainedPoint:handleLocation];
+    }
+
+    _resizedHandle = [_resizedGraphic resizeByMovingHandle:_resizedHandle toPoint:handleLocation];
+
+    [self setNeedsDisplay:YES];
+  }
 
 	[CPApp setTarget:self selector:@selector(resizeGraphic:) forNextEventMatchingMask:CPLeftMouseDraggedMask | CPLeftMouseUpMask untilDate:nil inMode:nil dequeue:YES];
 }
@@ -952,6 +940,7 @@ event = [[self window] nextEventMatchingMask:(CPLeftMouseDraggedMask | CPLeftMou
 {
   // Pretty simple.
   [[self mutableGraphics] removeObjectsAtIndexes:[self selectionIndexes]];
+  [self setNeedsDisplay:YES];
 }
 
 // Overrides of the NSResponder(NSStandardKeyBindingMethods) methods.
@@ -1083,18 +1072,25 @@ event = [[self window] nextEventMatchingMask:(CPLeftMouseDraggedMask | CPLeftMou
 
 - (void)performDragOperation:(CPDraggingInfo)aSender
 {
-  var draggedImage = [CPKeyedUnarchiver unarchiveObjectWithData:[[aSender draggingPasteboard] dataForType:CPImagesPboardType]];
+  var pbItems = [CPKeyedUnarchiver unarchiveObjectWithData:[[aSender draggingPasteboard] dataForType:CPImagesPboardType]];
+  var draggedImage = pbItems[0];;
 
-  var graphic = [[DDSRectangle alloc] init];
-  [graphic setXPosition:100.0];
-  [graphic setYPosition:100.0];
-  [graphic setWidth:1000.0];
-  [graphic setHeight:100.0];
-  [graphic setIsDrawingFill:YES];
-  [graphic setFillColor:[CPColor redColor]];
-  [graphic setStrokeColor:[CPColor blueColor]];
+  if (draggedImage !== null) {
+    var newGraphic = [[DDSImage alloc] initWithImage:draggedImage];
+    // [graphic setXPosition:[aSender draggedViewLocation].x];
+    // [graphic setYPosition:[aSender draggedViewLocation].y];
+    [newGraphic setWidth:[draggedImage size].width];
+    [newGraphic setHeight:[draggedImage size].height];
+    [[CPNotificationCenter defaultCenter] addObserver:self selector:@selector(imageDidLoad:) name:CPImageDidLoadNotification object:draggedImage];
+    [[self graphics] addObject:newGraphic];
+  }
+  [self setNeedsDisplay:YES];
+}
 
-  [[self graphics] addObject:graphic];
+-(void)imageDidLoad:(CPNotification)aNotification
+{
+  [[CPNotificationCenter defaultCenter] removeObserver:self name:CPImageDidLoadNotification object:[aNotification object]];
+  [self setNeedsDisplay:YES];
 }
 
 - (void)draggingEntered:(CPDraggingInfo)aSender
