@@ -25,14 +25,14 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
 
 @implementation DDSWindowController : CPWindowController
 {
-//  CPWindow       mWindow;
-  CPView         mContentView;
-  CPToolbar      mToolbar;
-	DDSGraphicContainer mGraphicContainer;
-  CPPanel        mMediaPanel;
-  CPPanel        mInspectorPanel;
-  CPPanel        mAdjustPanel;
+  @outlet  CPView         mContentView;
+  @outlet  CPToolbar      mToolbar;
+  @outlet  CPPanel        mMediaPanel;
+  @outlet  CPPanel        mInspectorPanel;
+  @outlet  CPPanel        mAdjustPanel;
 //  UploadButton   mUploadButton;
+
+	@outlet DDSGraphicContainer mGraphicContainer;
 }
 
 - (void)awakeFromCib
@@ -228,6 +228,16 @@ const kAddSlideItemIdentifier = @"kAddSlideItemIdentifier",
   [toolbarItem setMaxSize:CGSizeMake(32, 32)];
 
   return toolbarItem;
+}
+
+-(void)windowDidBecomeMain:(CPNotification)notification
+{
+	[[CPNotificationCenter defaultCenter] addObserver:mGraphicContainer selector:@selector(colorPanelChangedColor:) name:CPColorPanelColorDidChangeNotification object:nil];
+}
+
+-(void)windowDidResignMain:(CPNotification)notification
+{
+  [[CPNotificationCenter defaultCenter] removeObserver:mGraphicContainer name:CPColorPanelColorDidChangeNotification object:nil];
 }
 
 // - (IBAction)uploadFile:(id)sender

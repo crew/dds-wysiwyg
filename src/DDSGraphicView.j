@@ -69,6 +69,9 @@ const kRatioHeight = 1080;
 	// Marquee tracking
 	CPPoint _originalMouseLocation;
 	CPIndexSet _oldSelectionIndexes;
+
+  // Stage settings
+  CPColor _backgroundColor;
 }
 
 
@@ -83,6 +86,8 @@ const kRatioHeight = 1080;
   _pasteCascadeNumber = 0;
   _pasteCascadeDelta = CPMakePoint(DDSGraphicViewDefaultPasteCascadeDelta, DDSGraphicViewDefaultPasteCascadeDelta);
   [self registerForDraggedTypes:[CPImagesPboardType]];
+
+  _backgroundColor = [CPColor whiteColor];
 }
   return self;
 }
@@ -121,13 +126,23 @@ const kRatioHeight = 1080;
   return [[self graphics] objectsAtIndexes:[self selectionIndexes]];
 }
 
+- (CPColor)backgroundColor
+{
+  return _backgroundColor;
+}
+
+- (void)setBackgroundColor:(CPColor)aColor
+{
+  _backgroundColor = aColor;
+}
+
 // An override of the NSView method.
 - (void)drawRect:(CPRect)rect
 {
   var context = [[CPGraphicsContext currentContext] graphicsPort];
 
   // Draw the background background.
-  CGContextSetFillColor(context, [CPColor whiteColor]);
+  CGContextSetFillColor(context, [self backgroundColor]);
   CGContextFillRect(context, rect);
 
   // Draw the grid.

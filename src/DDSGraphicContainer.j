@@ -69,3 +69,10 @@
   [mGraphicView setFrame:CGRectInset(newRect, 20, 20)];
   [mShadowView setFrame:CGRectInset(newRect, 16, 16)];
 }
+
+- (void)colorPanelChangedColor:(CPNotification)notification {
+	[mGraphicView setBackgroundColor:[[notification object] color]];
+  [mGraphicView setNeedsDisplay:YES];
+}
+
+@end
