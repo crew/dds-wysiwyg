@@ -1048,14 +1048,27 @@ event = [[self window] nextEventMatchingMask:(CPLeftMouseDraggedMask | CPLeftMou
   // Create the object
   var viewJSONObject = { "id" : "slide",
                          "type" : "ClutterGroup"};
-
   viewJSONObject.children = [];
+
+  var backgroundJSONObject = {
+    "id" : "background",
+    "type" : "ClutterRectangle",
+    "x" : 0,
+    "y" : 0,
+    "width" : kRatioWidth,
+    "height" : kRatioHeight,
+    "color" : "#"+[[self backgroundColor] hexString],
+    "opacity": 255,
+    "visible" : true
+  };
+
+  viewJSONObject.children[0] = backgroundJSONObject;
 
   for(var i=0; [[self graphics] count] > i; i++) {
     var sView = [[self graphics] objectAtIndex:i];
     var sViewJSON = [sView serializeToJSON];
 
-    viewJSONObject.children[i] = sViewJSON;
+    viewJSONObject.children[i+1] = sViewJSON;
   }
 
   var chCnt = 0;
