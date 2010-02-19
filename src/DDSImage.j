@@ -40,10 +40,14 @@
 - (id)serializeToJSON
 {
   // Create the object
+  var uuid = [CPString UUID];
+  var justFilename = [mImage filename].substring([mImage filename].lastIndexOf('/')+1);
+
   var imageJSONObject = {
-    "id" : [CPString UUID],
+    "id" : uuid,
     "type" : [self clutterType],
-    "filename" : [mImage filename],
+    "filename" : uuid + "_" + justFilename,
+    "url" : [mImage filename],
     "x" : [self xPosition],
     "y" :  [self yPosition],
     "width" : [self width],
